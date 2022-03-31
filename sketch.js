@@ -11,8 +11,8 @@
   - do collision-detection
   
 ------------------------------------------------------------------------------------
-	To use:
-	Add this line to the index.html
+  To use:
+  Add this line to the index.html
 
   <script src="p5.timer.js"></script>
 ***********************************************************************************/
@@ -24,23 +24,27 @@ var speed = 10;
 var avatars = [];
 var selectedIndex = 0;
 
+// non playable character
+var blob;
+
 function preload() {
   // Add new avatar animations here
   avatars[0] = new Avatar("Matt", 100, 150, 'assets/walk-01.png', 'assets/walk-04.png');
   avatars[1] = new Avatar("Mitch", 400, 150, 'assets/mos_1.png', 'assets/mos_2.png');
-  avatars[2] = new Avatar("Jennifer", 500, 150, 'assets/blob01.png', 'assets/blob08.png');
+  avatars[2] = new Avatar("Savannah", 100, 700, 'assets/girl2.png', 'assets/girl6.png');
   avatars[3] = new Avatar("Ty", 200, 400, 'assets/avatar1.png', 'assets/avatar5.png');
   avatars[4] = new Avatar("Hannah", 100, 400, 'assets/Smile01.png', 'assets/Smile04.png');
   avatars[5] = new Avatar("Luis", 300, 400, 'assets/run1.png', 'assets/run2.png');
   avatars[6] = new Avatar("Morgan", 500, 400, 'assets/frog-01.png', 'assets/frog-08.png');
-  avatars[7] = new Avatar("Savannah", 100, 700, 'assets/girl2.png', 'assets/girl6.png');
+
+  blob = new NonPlayableCharacter("Jennifer", "Me gusta correr en la playa.!", 500, 150, 'assets/blob01.png', 'assets/blob08.png');
 }
 // Setup code goes here
 function setup() {
   createCanvas(1000, 800);
 
   frameRate(30);
- }
+}
 
 // Draw code goes here
 function draw() {
@@ -56,11 +60,11 @@ function draw() {
 
 // This will reset position
 function keyPressed() {
-  if( key === ' ') {
+  if (key === ' ') {
     // stop current avatar
-    avatars[selectedIndex].setSpeed(0,0);
+    avatars[selectedIndex].setSpeed(0, 0);
     selectedIndex++;
-    if( selectedIndex === avatars.length ) {
+    if (selectedIndex === avatars.length) {
       selectedIndex = 0;
     }
   }
@@ -71,18 +75,18 @@ function checkMovement() {
   var ySpeed = 0;
 
   // Check x movement
-  if(keyIsDown(RIGHT_ARROW)) {
+  if (keyIsDown(RIGHT_ARROW)) {
     xSpeed = speed;
   }
-  else if(keyIsDown(LEFT_ARROW)) {
+  else if (keyIsDown(LEFT_ARROW)) {
     xSpeed = -speed;
   }
-  
+
   // Check y movement
-  if(keyIsDown(DOWN_ARROW)) {
+  if (keyIsDown(DOWN_ARROW)) {
     ySpeed = speed;
   }
-  else if(keyIsDown(UP_ARROW)) {
+  else if (keyIsDown(UP_ARROW)) {
     ySpeed = -speed;
   }
 
@@ -90,22 +94,51 @@ function checkMovement() {
 }
 
 // Animated character
-class Avatar  {
+class Avatar {
   // gets called with new keyword
   constructor(name, x, y, startPNGPath, endPNGPath) {
     this.name = name;
     this.sprite = createSprite(x, y);
     this.sprite.addAnimation('floating', startPNGPath, endPNGPath);
-    
+
     // no grabables
     this.grabbable = undefined;
 
     // make avatar still
-    this.setSpeed(0,0);
+    this.setSpeed(0, 0);
   }
 
-  setSpeed(xSpeed,ySpeed) {
+  setSpeed(xSpeed, ySpeed) {
     this.sprite.velocity.x = xSpeed;
     this.sprite.velocity.y = ySpeed;
+  }
+}
+
+class NonPlayableCharacter extends Avatar {
+  constructor(name, message, x, y, startPNGPath, endPNGPath) {
+    this.name = name;
+    this.message = message;
+    this.sprite = createSprite(x, y);
+    this.sprite.addAnimation('floating', startPNGPath, endPNGPath);
+
+    // no grabables
+    this.grabbable = undefined;
+
+    // make avatar still
+    this.setSpeed(0, 0);
+  }
+
+  inRange(avatarX, avatarY) {
+    if (avatarX > this.x - 10 && avatarX < this.x + 10 && avatarY > this.y - 10 && avatarY < this.y + 10) {
+      this.sayMessage();
+    }
+  }
+
+  sayMessage() {
+    text(this.name + ": " + this.message, 50, y - 50);
+  }
+
+  setMessage(message) {
+    this.message = message;
   }
 }

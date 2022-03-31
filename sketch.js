@@ -37,7 +37,7 @@ function preload() {
   avatars[5] = new Avatar("Luis", 300, 400, 'assets/run1.png', 'assets/run2.png');
   avatars[6] = new Avatar("Morgan", 500, 400, 'assets/frog-01.png', 'assets/frog-08.png');
 
-  blob = new NonPlayableCharacter("Jennifer", "Me gusta correr en la playa.!", 500, 150, 'assets/blob01.png', 'assets/blob08.png');
+  blob = new NonPlayableCharacter("Jennifer", "Me gusta correr en la playa!", 500, 150, 'assets/blob01.png', 'assets/blob08.png');
 }
 // Setup code goes here
 function setup() {
@@ -91,6 +91,8 @@ function checkMovement() {
   }
 
   avatars[selectedIndex].setSpeed(xSpeed, ySpeed);
+  //blob.inRange(avatar);
+  blob.inRange(avatars[selectedIndex].x, avatars[selectedIndex].y);
 }
 
 // Animated character
@@ -116,26 +118,18 @@ class Avatar {
 
 class NonPlayableCharacter extends Avatar {
   constructor(name, message, x, y, startPNGPath, endPNGPath) {
-    this.name = name;
+    super(name, x, y, startPNGPath, endPNGPath);
     this.message = message;
-    this.sprite = createSprite(x, y);
-    this.sprite.addAnimation('floating', startPNGPath, endPNGPath);
-
-    // no grabables
-    this.grabbable = undefined;
-
-    // make avatar still
-    this.setSpeed(0, 0);
   }
 
+  //inRange(avatar) {
   inRange(avatarX, avatarY) {
-    if (avatarX > this.x - 10 && avatarX < this.x + 10 && avatarY > this.y - 10 && avatarY < this.y + 10) {
-      this.sayMessage();
+    console.log(avatarX + " " + avatarY + " " + this.x + " " + this.y);
+    //if(this.sprite.overlap(avatar)){
+    if (avatarX > this.x - 100 && avatarX < this.x + 100 && avatarY > this.y - 100 && avatarY < this.y + 100) {
+      fill(0, 0, 0);
+      text(this.name + ": " + this.message, 100, 100);
     }
-  }
-
-  sayMessage() {
-    text(this.name + ": " + this.message, 50, y - 50);
   }
 
   setMessage(message) {
